@@ -59,6 +59,11 @@ function buildCtas(result: AssessmentResult): CtaAction[] {
       href: testDay,
     },
     {
+      label: "Profil kopieren",
+      description: "Zusammenfassung in die Zwischenablage",
+      clipboard: body,
+    },
+    {
       label: "PDF-Auswertung",
       description: "Load Passport drucken / als PDF sichern",
       print: true,

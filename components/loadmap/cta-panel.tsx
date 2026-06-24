@@ -1,5 +1,7 @@
 "use client";
 
+import { useState, useCallback } from "react";
+
 import { ArrowRightIcon } from "./icons";
 
 export type CtaAction = {
@@ -9,6 +11,8 @@ export type CtaAction = {
   href?: string;
   /** triggers the browser print dialog (PDF export MVP) */
   print?: boolean;
+  /** text to copy to clipboard (fallback when mailto: fails) */
+  clipboard?: string;
   primary?: boolean;
 };
 
@@ -25,6 +29,15 @@ const secondaryClass =
   "border-white/[0.1] bg-white/[0.03] text-ink hover:-translate-y-0.5 hover:border-brand-300/40 hover:bg-white/[0.06]";
 
 export function CtaPanel({ ctas, disclaimer }: CtaPanelProps) {
+  const [copiedLabel, setCopiedLabel] = useState<string | null>(null);
+
+  const handleCopy = useCallback((label: string, text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopiedLabel(label);
+      setTimeout(() => setCopiedLabel(null), 2000);
+    });
+  }, []);
+
   return (
     <div className="relative overflow-hidden rounded-[30px] border border-white/[0.08] bg-surface-0 p-6 text-ink shadow-panel">
       <div className="pointer-events-none absolute inset-0 bg-grid-dark bg-[size:32px_32px] opacity-50" />
@@ -34,13 +47,13 @@ export function CtaPanel({ ctas, disclaimer }: CtaPanelProps) {
         <p className="mt-2 text-sm text-ink-muted">
           Aus der Analyse wird der nächste konkrete Schritt — direkt anschlussfähig.
         </p>
-        <div className="mt-5 grid gap-3 md:grid-cols-3">
+        <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
           {ctas.map((cta) => {
             const className = [baseClass, cta.primary ? primaryClass : secondaryClass].join(" ");
             const inner = (
               <>
                 <span className="flex flex-col gap-1">
-                  <span>{cta.label}</span>
+                  <span aria-live="assertive">{copiedLabel === cta.label ? "Kopiert!" : cta.label}</span>
                   <span
                     className={[
                       "text-xs font-medium",
@@ -54,12 +67,27 @@ export function CtaPanel({ ctas, disclaimer }: CtaPanelProps) {
               </>
             );
 
+            if (cta.clipboard) {
+              return (
+                <button
+                  key={cta.label}
+                  type="button"
+                  onClick={() => handleCopy(cta.label, cta.clipboard!)}
+                  aria-label={`${cta.label}: ${cta.description}`}
+                  className={className}
+                >
+                  {inner}
+                </button>
+              );
+            }
+
             if (cta.print) {
               return (
                 <button
                   key={cta.label}
                   type="button"
                   onClick={() => window.print()}
+                  aria-label={`${cta.label}: ${cta.description}`}
                   className={className}
                 >
                   {inner}
@@ -80,6 +108,12 @@ export function CtaPanel({ ctas, disclaimer }: CtaPanelProps) {
             );
           })}
         </div>
+        <p className="mt-4 text-center text-sm text-ink-muted">
+          Oder direkt per E-Mail:{" "}
+          <a href="mailto:beratung@neuroway.de" className="rounded font-medium text-brand-300 transition hover:text-brand-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400">
+            beratung@neuroway.de
+          </a>
+        </p>
         <p className="mt-6 text-sm leading-6 text-ink-faint">{disclaimer}</p>
       </div>
     </div>

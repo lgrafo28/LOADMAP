@@ -40,7 +40,7 @@ export function QuestionsStep({
               aria-atomic="true"
               className="rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1 text-sm font-semibold text-ink"
             >
-              {preview.answeredQuestions} / {preview.totalQuestions}
+              {preview.answeredQuestions} von {preview.totalQuestions} beantwortet
             </span>
           </div>
           <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-white/[0.05]">

@@ -1,6 +1,6 @@
 import { RegionId, Severity } from "@/types/loadmap";
 
-import { regionLabels } from "./utils";
+import { regionLabels, severityHex } from "./utils";
 
 export type RadarRegion = {
   regionId: RegionId;
@@ -27,12 +27,6 @@ const severityRadius: Record<Severity, number> = {
   red: 0.84,
   yellow: 0.58,
   green: 0.34,
-};
-
-const severityColor: Record<Severity, string> = {
-  red: "#fb5b6d",
-  yellow: "#fbbf24",
-  green: "#5dcaa5",
 };
 
 const polar = (angle: number, radius: number, scale = 80) => {
@@ -88,7 +82,7 @@ export function LoadRadar({ regions = [] }: LoadRadarProps) {
           const angle = regionAngle[region.regionId];
           const radius = severityRadius[region.severity];
           const { x, y } = polar(angle, radius);
-          const color = severityColor[region.severity];
+          const color = severityHex[region.severity];
           return (
             <g key={region.regionId}>
               <circle

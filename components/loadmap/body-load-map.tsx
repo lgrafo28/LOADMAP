@@ -4,7 +4,7 @@ import { KeyboardEvent, useMemo } from "react";
 
 import { RegionId, RegionSeverity, Severity } from "@/types/loadmap";
 
-import { regionLabels, severityLabels } from "./utils";
+import { regionLabels, severityHex, severityLabels } from "./utils";
 
 type Hotspot = { cx: number; cy: number; r: number };
 
@@ -35,11 +35,6 @@ const regionHotspots: Record<RegionId, Hotspot[]> = {
 
 const regionOrder: RegionId[] = ["neck", "shoulders", "back", "wrists", "knees", "legsFeet"];
 
-const severityColor: Record<Severity, string> = {
-  green: "#34d399",
-  yellow: "#fbbf24",
-  red: "#fb5b6d",
-};
 
 type BodyLoadMapProps = {
   selectedRegions?: RegionId[];
@@ -75,9 +70,9 @@ export function BodyLoadMap({
   const colorForRegion = (region: RegionId): string => {
     const severity = severityByRegion.get(region);
     if (severity) {
-      return severityColor[severity];
+      return severityHex[severity];
     }
-    return "#5dcaa5";
+    return severityHex.green;
   };
 
   return (
@@ -89,17 +84,13 @@ export function BodyLoadMap({
     >
       <defs>
         <linearGradient id="body-fill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#1b3a63" stopOpacity="0.95" />
-          <stop offset="100%" stopColor="#0d1c33" stopOpacity="0.95" />
+          <stop offset="0%" stopColor="#0b2218" stopOpacity="0.95" />
+          <stop offset="100%" stopColor="#0f2c20" stopOpacity="0.95" />
         </linearGradient>
-        <radialGradient id="hot-red" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#fb5b6d" stopOpacity="0.95" />
-          <stop offset="100%" stopColor="#fb5b6d" stopOpacity="0" />
-        </radialGradient>
       </defs>
 
       {/* Silhouette base */}
-      <g stroke="#5dcaa5" strokeOpacity="0.35" strokeWidth="2" fill="url(#body-fill)">
+      <g stroke="#4cc38a" strokeOpacity="0.35" strokeWidth="2" fill="url(#body-fill)">
         <circle cx="120" cy="48" r="26" />
         <rect x="112" y="70" width="16" height="18" rx="6" />
         {/* torso */}
@@ -179,9 +170,9 @@ export function BodyLoadMap({
                   cx={spot.cx}
                   cy={spot.cy}
                   r={spot.r}
-                  fill={active ? color : "#0d1c33"}
+                  fill={active ? color : "#0f2c20"}
                   fillOpacity={active ? 0.85 : 0.5}
-                  stroke={active ? color : "#5dcaa5"}
+                  stroke={active ? color : "#4cc38a"}
                   strokeOpacity={active ? 0.9 : 0.4}
                   strokeWidth="2"
                 />

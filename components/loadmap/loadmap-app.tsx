@@ -24,7 +24,10 @@ export function LoadMapApp() {
   const [result, setResult] = useState<AssessmentResult | null>(null);
   const assessmentRef = useRef<HTMLElement>(null);
   const prevStepRef = useRef(currentStep);
-  const activeQuestions = useMemo(() => getQuestionsForActivity(state.activityId), [state.activityId]);
+  const activeQuestions = useMemo(
+    () => getQuestionsForActivity(state.activityId, state.selectedRegions),
+    [state.activityId, state.selectedRegions],
+  );
   const activity = useMemo(() => getActivityById(state.activityId), [state.activityId]);
   const preview = buildAssessmentPreview(state);
   const stepCopy = getStepCopy(currentStep, state);
@@ -121,12 +124,19 @@ export function LoadMapApp() {
   };
 
   const toggleRegion = (regionId: RegionId) => {
-    setState((previous) => ({
-      ...previous,
-      selectedRegions: previous.selectedRegions.includes(regionId)
+    setState((previous) => {
+      const nextRegions = previous.selectedRegions.includes(regionId)
         ? previous.selectedRegions.filter((entry) => entry !== regionId)
-        : [...previous.selectedRegions, regionId],
-    }));
+        : [...previous.selectedRegions, regionId];
+
+      // Auto-set focusRegion when exactly one region is selected
+      const nextAnswers =
+        nextRegions.length === 1 && !previous.answers.focusRegion
+          ? { ...previous.answers, focusRegion: nextRegions[0] }
+          : previous.answers;
+
+      return { ...previous, selectedRegions: nextRegions, answers: nextAnswers };
+    });
     setResult(null);
   };
 

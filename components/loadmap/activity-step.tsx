@@ -8,7 +8,7 @@ type ActivityStepProps = {
 
 export function ActivityStep({ activityId, onSelect }: ActivityStepProps) {
   return (
-    <div className="flex flex-wrap justify-center gap-4">
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {activities.map((activity) => {
         const selected = activityId === activity.id;
 
@@ -19,7 +19,7 @@ export function ActivityStep({ activityId, onSelect }: ActivityStepProps) {
             onClick={() => onSelect(activity.id)}
             aria-pressed={selected}
             className={[
-              "group relative flex w-full grow basis-[300px] flex-col overflow-hidden rounded-[26px] border p-5 text-left transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-panel sm:max-w-[360px]",
+              "group relative flex w-full flex-col overflow-hidden rounded-[26px] border p-5 text-left transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-panel",
               selected
                 ? "border-brand-300/50 bg-brand-500/[0.07] shadow-glow"
                 : "border-white/[0.08] bg-white/[0.02] hover:-translate-y-1 hover:border-brand-300/30 hover:bg-white/[0.04]",

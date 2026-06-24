@@ -6,6 +6,12 @@ export const severityStyles: Record<Severity, string> = {
   red: "bg-danger/12 text-danger ring-1 ring-danger/30",
 };
 
+export const severityHex: Record<Severity, string> = {
+  green: "#4cc38a",   // = Tailwind success token
+  yellow: "#e2b23c",  // = Tailwind warning token
+  red: "#e0596a",     // = Tailwind danger token
+};
+
 export const severityLabels: Record<Severity, string> = {
   green: "Niedrig",
   yellow: "Relevant",
