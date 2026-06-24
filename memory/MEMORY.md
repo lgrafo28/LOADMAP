@@ -1,0 +1,1 @@
+- [LoadMap project status](loadmap-project-status.md) — Neuroway "Interaktive LoadMap": Next.js 16 ergonomics assessment; prompts 1&2 done, prompt 3 (visual) in progress
