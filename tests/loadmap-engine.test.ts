@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { evaluateAssessment, buildAssessmentPreview } from "../lib/loadmap-engine";
-import { questionCatalog, activities, bodyRegions, matchingRules } from "../data/loadmap-data";
+import { questionCatalog, activities, bodyRegions, matchingRules, getQuestionsForActivity } from "../data/loadmap-data";
 import { AssessmentState, ACTIVITY_IDS, REGION_IDS } from "../types/loadmap";
 
 test("Heben plus Ruecken und hohe Last fuehrt zu hohem Risiko und Rueckenmassnahme", () => {
@@ -253,4 +253,34 @@ test("answerFilter values in matching rules reference valid option values", () =
       }
     }
   }
+});
+
+// --- focusRegion filtering tests ---
+
+test("getQuestionsForActivity with selectedRegions filters focusRegion options to selected regions", () => {
+  const questions = getQuestionsForActivity("lifting", ["back", "knees"]);
+  const focusQ = questions.find((q) => q.id === "focusRegion");
+
+  assert.ok(focusQ, "focusRegion question must be present");
+  assert.equal(focusQ.options.length, 2, "should have exactly 2 options for back and knees");
+
+  const values = focusQ.options.map((o) => o.value).sort();
+  assert.deepEqual(values, ["back", "knees"]);
+});
+
+test("getQuestionsForActivity with single selectedRegion returns focusRegion with 1 option", () => {
+  const questions = getQuestionsForActivity("lifting", ["shoulders"]);
+  const focusQ = questions.find((q) => q.id === "focusRegion");
+
+  assert.ok(focusQ, "focusRegion question must be present");
+  assert.equal(focusQ.options.length, 1, "should have exactly 1 option for shoulders");
+  assert.equal(focusQ.options[0].value, "shoulders");
+});
+
+test("getQuestionsForActivity without selectedRegions returns focusRegion with all 6 options (backwards compat)", () => {
+  const questions = getQuestionsForActivity("lifting");
+  const focusQ = questions.find((q) => q.id === "focusRegion");
+
+  assert.ok(focusQ, "focusRegion question must be present");
+  assert.equal(focusQ.options.length, 6, "should have all 6 region options when no selectedRegions provided");
 });

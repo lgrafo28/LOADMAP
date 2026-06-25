@@ -11,6 +11,7 @@ export function ProgressBar({ currentStep }: ProgressBarProps) {
     <div
       data-print-hide
       className="rounded-[24px] border border-white/[0.08] bg-white/[0.02] p-4 backdrop-blur"
+      role="group"
       aria-label="Fortschritt der LoadMap"
     >
       <ol className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">

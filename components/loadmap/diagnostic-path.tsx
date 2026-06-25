@@ -10,9 +10,9 @@ const statusStyles: Record<
   { dot: string; ring: string; label: string }
 > = {
   selected: { dot: "bg-brand-400", ring: "ring-brand-400/40", label: "Auswahl" },
-  detected: { dot: "bg-amber-400", ring: "ring-amber-400/40", label: "Erkannt" },
-  calculated: { dot: "bg-rose-400", ring: "ring-rose-400/40", label: "Berechnet" },
-  recommended: { dot: "bg-emerald-400", ring: "ring-emerald-400/40", label: "Empfohlen" },
+  detected: { dot: "bg-warning", ring: "ring-warning/40", label: "Erkannt" },
+  calculated: { dot: "bg-danger", ring: "ring-danger/40", label: "Berechnet" },
+  recommended: { dot: "bg-success", ring: "ring-success/40", label: "Empfohlen" },
 };
 
 export function DiagnosticPath({ nodes, title = "Belastungspfad" }: DiagnosticPathProps) {

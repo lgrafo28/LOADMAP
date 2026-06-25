@@ -791,10 +791,41 @@ export const getActivityById = (activityId: ActivityId | null) =>
 export const getRegionById = (regionId: RegionId) =>
   bodyRegions.find((region) => region.id === regionId);
 
-export const getQuestionsForActivity = (activityId: ActivityId | null): DecisionQuestion[] => {
+/**
+ * Returns questions relevant to the given activity.
+ *
+ * When `selectedRegions` is provided, the `focusRegion` question's options
+ * are filtered to only include regions the user already selected in step 2.
+ * This prevents the double-query UX issue where step 3 re-offers all 6
+ * regions even though step 2 already narrowed them.
+ *
+ * The second parameter is optional for backwards compatibility — omitting it
+ * returns the focusRegion question with all 6 canonical options.
+ */
+export const getQuestionsForActivity = (
+  activityId: ActivityId | null,
+  selectedRegions?: RegionId[],
+): DecisionQuestion[] => {
   if (!activityId) {
     return [];
   }
 
-  return questionCatalog.filter((question) => question.activityIds.includes(activityId));
+  const questions = questionCatalog.filter((question) => question.activityIds.includes(activityId));
+
+  if (!selectedRegions || selectedRegions.length === 0) {
+    return questions;
+  }
+
+  const regionSet = new Set<string>(selectedRegions);
+
+  return questions.map((question) => {
+    if (question.id !== "focusRegion") {
+      return question;
+    }
+
+    return {
+      ...question,
+      options: question.options.filter((opt) => regionSet.has(opt.value)),
+    };
+  });
 };
